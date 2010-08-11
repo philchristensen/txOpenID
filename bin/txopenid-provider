@@ -1,0 +1,121 @@
+#!/bin/bash
+
+OPENID_HOME=/usr/local/txopenid
+
+OPENID_PORT=8888
+OPENID_HOSTNAME=id.example.com
+OPENID_ACCESSLOG=/var/log/txopenid/access.log
+OPENID_ERRORLOG=/var/log/txopenid/error.log
+OPENID_UID=www-data
+OPENID_GID=www-data
+
+OPENID_LOG_DIR=/var/log/txopenid
+OPENID_RUN_DIR=/var/run/txopenid
+
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=txopenid
+MYSQL_PASS=txopenid
+MYSQL_DB=txopenid
+
+TWISTD=/usr/local/bin/twistd
+TWISTD_PIDFILE=/var/run/txopenid/twistd.pid
+
+# DEBIAN INSTRUCTIONS
+# 
+# root@debian:~# update-rc.d OPENID defaults
+#  Adding system startup for /etc/init.d/txopenid ...
+#    /etc/rc0.d/K20OPENID -> ../init.d/txopenid
+#    /etc/rc1.d/K20OPENID -> ../init.d/txopenid
+#    /etc/rc6.d/K20OPENID -> ../init.d/txopenid
+#    /etc/rc2.d/S20OPENID -> ../init.d/txopenid
+#    /etc/rc3.d/S20OPENID -> ../init.d/txopenid
+#    /etc/rc4.d/S20OPENID -> ../init.d/txopenid
+#    /etc/rc5.d/S20OPENID -> ../init.d/txopenid
+#
+# If you wish to remove the script from the startup sequence in the future run:
+# 
+# root@OPENID:/etc/rc2.d# update-rc.d -f OPENID remove
+# update-rc.d: /etc/init.d/txopenid exists during rc.d purge (continuing)
+#  Removing any system startup links for /etc/init.d/txopenid ...
+#    /etc/rc0.d/K20OPENID
+#    /etc/rc1.d/K20OPENID
+#    /etc/rc2.d/S20OPENID
+#    /etc/rc3.d/S20OPENID
+#    /etc/rc4.d/S20OPENID
+#    /etc/rc5.d/S20OPENID
+#    /etc/rc6.d/K20OPENID
+#
+# This will leave the script itself in place, just remove the links which cause it to be executed.
+# 
+# You can find more details of this command by running "man update-rc.d".
+#
+#
+# RED HAT INSTRUCTIONS
+# 
+# root@redhat:~# chkconfig --add OPENID-redhat
+# root@redhat:~# chkconfig --levels 2345 txopenid on
+#
+#
+# If you wish to remove the script from the startup sequence in the future run:
+# 
+# root@redhat:~# chkconfig --levels 2345 txopenid off
+
+config(){
+	if [ ! -e $OPENID_LOG_DIR ]; then
+	    mkdir $OPENID_LOG_DIR
+	fi
+	
+	chown -R $OPENID_UID:$OPENID_GID $OPENID_LOG_DIR
+	chmod -R 775 $OPENID_LOG_DIR
+	
+	if [ ! -e $OPENID_RUN_DIR ]; then
+	    mkdir $OPENID_RUN_DIR
+	fi
+	
+	chown $OPENID_UID:$OPENID_GID $OPENID_RUN_DIR
+	chmod 775 $OPENID_RUN_DIR
+	
+	chown $OPENID_UID:$OPENID_GID $OPENID_HOME/twisted/plugins
+	chmod 775 $OPENID_HOME/twisted/plugins
+}
+
+start(){
+    if [ -f $TWISTD_PIDFILE ]; then
+        echo "Cannot start txOpenID, it appears to already be running."
+    else
+        echo "Starting txOpenID..."
+        $TWISTD --rundir=$OPENID_HOME --uid=$OPENID_UID --gid=$OPENID_GID --logfile=$OPENID_ERRORLOG --pidfile=$TWISTD_PIDFILE txopenid-provider --host=$MYSQL_HOST --port=$MYSQL_PORT --name=$MYSQL_DB --username=$MYSQL_USER --secret=$MYSQL_PASS --hostname=$OPENID_HOSTNAME --server-port=$OPENID_PORT --access-log=$OPENID_ACCESSLOG
+    fi
+}
+
+stop(){
+    if [ -f $TWISTD_PIDFILE ]; then
+        echo "Stopping txOpenID..."
+        kill `cat $TWISTD_PIDFILE`
+    else
+        echo "Cannot stop txOpenID, it doesn't appear to be running."
+    fi
+}
+ 
+# See how we were called.
+case "$1" in
+  start)
+    config
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    config
+    start
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?
+

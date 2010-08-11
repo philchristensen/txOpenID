@@ -1,0 +1,10 @@
+<html xmlns:nevow="http://nevow.com/ns/nevow/0.1">
+	<head>
+		<title>openid consumer login</title>
+		<link rel="stylesheet" type="text/css" href="/assets/global.css"/>
+	</head>
+	<body>
+		<h1>openid consumer login</h1>
+		<nevow:invisible nevow:data="login_form" nevow:render="data" />
+	</body>
+</html>

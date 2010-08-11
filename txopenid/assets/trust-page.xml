@@ -1,0 +1,25 @@
+<html xmlns:nevow="http://nevow.com/ns/nevow/0.1">
+	<head>
+		<title>openid trusted roots</title>
+		<link rel="stylesheet" type="text/css" href="/assets/global.css"/>
+	</head>
+	<body>
+		<h1>openid trusted roots</h1>
+		
+		[
+		<a href="/user/info">overview</a> |
+		<a href="/user/identity">identities</a> |
+		trust |
+		<a href="/user/logout">logout</a>
+		]
+		
+		<form method="POST">
+		<nevow:invisible nevow:data="trusted_roots" nevow:render="data" />
+		<input type="submit" name="submit" value="remove selected" />
+		
+		<nevow:invisible nevow:data="new_root" nevow:render="data" />
+		
+		<nevow:invisible nevow:data="openid_fields" nevow:render="data" />
+		</form>
+	</body>
+</html>

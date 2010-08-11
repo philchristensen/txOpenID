@@ -1,0 +1,29 @@
+body {
+	font-family: helvetica, arial, _sans;
+}
+
+.error {
+	color: red;
+}
+
+.trustable {
+	margin: 10px 5px 10px 5px;
+	padding: 5px;
+	width: 450px;
+	background-color: #ccc;
+	border: 1px solid #666;
+}
+
+.trustable input[type="submit"] {
+	display: block;
+}
+
+.url-list {
+	list-style: none;
+}
+
+.url-list li {
+	padding-left: 10px;
+	margin-left: 0px;
+}
+

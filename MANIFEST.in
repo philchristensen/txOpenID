@@ -1,0 +1,13 @@
+include README
+include MANIFEST.in
+include LICENSE
+include setup.py
+
+global-exclude .*
+
+recursive-include twisted/plugins *.py
+recursive-include txopenid/assets *.xml
+
+graft txopenid/assets/webroot
+graft docs
+

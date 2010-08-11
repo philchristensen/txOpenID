@@ -1,0 +1,22 @@
+<html xmlns:nevow="http://nevow.com/ns/nevow/0.1">
+	<head>
+		<title>openid user info</title>
+		<link rel="stylesheet" type="text/css" href="/assets/global.css"/>
+	</head>
+	<body>
+		<h1>openid user info</h1>
+		
+		[
+		overview |
+		<a href="/user/identity">identities</a> |
+		<a href="/user/trust">trust</a> |
+		<a href="/user/logout">logout</a>
+		]
+		
+		<nevow:invisible nevow:data="info" nevow:render="data" />
+		
+		<nevow:invisible nevow:data="identities" nevow:render="data" />
+		
+		<nevow:invisible nevow:data="trusted_roots" nevow:render="data" />
+	</body>
+</html>

@@ -1,0 +1,43 @@
+CREATE TABLE IF NOT EXISTS `session` (
+  `id` varchar(255),
+  `user_id` bigint(20),
+  `created` int(11),
+  `accessed` int(11),
+  `timeout` int(11),
+  `data` BLOB,
+  PRIMARY KEY (id),
+  KEY `user_idx` (`user_id`),
+  KEY `accessed_idx` (`accessed`),
+  KEY `timeout_idx` (`timeout`),
+  KEY `expiry_idx` (`accessed`, `timeout`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` bigint(20) auto_increment,
+  `username` varchar(255),
+  `first` varchar(255),
+  `last` varchar(255),
+  `crypt` varchar(255),
+  PRIMARY KEY (id),
+  UNIQUE KEY `username_idx` (`username`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE IF NOT EXISTS `identity` (
+  `id` bigint(20) auto_increment,
+  `user_id` bigint(20),
+  `url` varchar(255),
+  PRIMARY KEY (id),
+  KEY `user_idx` (`user_id`),
+  KEY `url_idx` (`url`),
+  UNIQUE KEY `lookup_idx` (`user_id`, `url`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE IF NOT EXISTS `trusted_root` (
+  `id` bigint(20) auto_increment,
+  `user_id` bigint(20),
+  `url` varchar(255),
+  PRIMARY KEY (id),
+  KEY `user_idx` (`user_id`),
+  KEY `url_idx` (`url`),
+  KEY `lookup_idx` (`user_id`, `url`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;

@@ -1,0 +1,81 @@
+txOpenID
+(c) 2007-2008 Phil Christensen
+See LICENSE for details
+
+txOpenID is an implementation of the OpenID Identity Provider specification,
+written using Twisted Web and Divmod's Nevow. It reads authentication data and
+user web sessions out of a MySQL database using MySQLdb and Twisted Enterprise's
+adbapi layer.
+
+txOpenID currently supports version 1.1 of the OpenID specification.
+
+Requirements
+------------
+Python 2.5
+Twisted 8.1.0 (Core, Web)
+Nevow 0.9.31
+
+About OpenID
+------------
+(from http://en.wikipedia.org/wiki/OpenID)
+
+OpenID is a shared identity service, which allows Internet users to log on to
+many different web sites using a single digital identity, eliminating the need
+for a different user name and password for each site. OpenID is a
+decentralized, free and open standard that lets users control the amount of
+personal information they provide.
+
+Using OpenID-enabled sites, web users do not need to remember traditional
+items of identity such as username and password. Instead, they only need to be
+registered with any OpenID "identity provider" (IdP). Since OpenID is
+decentralized, any website can use OpenID as a way for users to sign in;
+OpenID does not require a centralized authority to confirm a user's
+digital identity.
+
+QuickStart
+----------
+These instructions assume you've unpacked the txOpenID distribution, and have
+changed to that directory.
+
+First create a MySQL database to store user account and session data:
+
+    mysql -u root -p -e "CREATE DATABASE txopenid"
+    mysql -u root -p -e "GRANT ALL ON txopenid.* TO txopendid@localhost \
+                        IDENTIFIED BY 'txopenid'"
+    mysql -u root -p -e "FLUSH PRIVILEGES"
+    mysql -u root -p < docs/database-schema.mysql
+
+You'll also need to create a user account that will be your Single Sign-On
+by adding a new record to the 'user' table:
+
+    mysql -u root -p -e "INSERT INTO user (username, first, last, crypt) \
+                         VALUES ('user', 'Joe', 'User', ENCRYPT('mypassword'))"
+
+To setup a URL as an OpenID identifier, simply add the following tag to
+the page header:
+
+    <link rel="openid.server" href="http://server.hostname.com:8888">
+
+Finally, launch the authentication server:
+
+    twistd -n openid -H server.hostname.com
+
+You should now be able to use your OpenID identifier to login to a compatible
+consumer. Keep in mind there are two different ways to authenticate to a 
+OpenID provider:
+
+    checkid_immediate
+    
+    This is used in AJAX-type scenarios, and will always return immediately.
+    If setup is required (e.g., to login, or approve a new identity or trusted
+    root), the particular ID consumer is responsible for opening a new window
+    or frame to the ID server so you can validate the request.
+    
+    checkid_setup
+    
+    This method is used when it's not important for the user to stay on-site.
+    They will be redirected to the ID server, and will have a chance to login
+    or approve the request if necessary. Once that is complete, or if there
+    is nothing required of the end user (e.g., they are logged in, and already
+    trust the root and identity), the ID server will redirect back to the
+    consumer's provided return_to URL.

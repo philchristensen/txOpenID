@@ -1,0 +1,29 @@
+<html xmlns:nevow="http://nevow.com/ns/nevow/0.1">
+	<head>
+		<title>openid provider login</title>
+		<link rel="stylesheet" type="text/css" href="/assets/global.css"/>
+	</head>
+	<body>
+		<h1>openid provider login</h1>
+		<form method="post">
+			<table>
+				<tr>
+					<td valign="top">username:</td>
+					<td><input type="text" name="username" size="25"/></td>
+				</tr>
+				<tr>
+					<td valign="top">password:</td>
+					<td><input type="password" name="password" size="25"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" name="submit" value="login"/>
+						<nevow:invisible nevow:data="cancel" nevow:render="data" />
+					</td>
+				</tr>
+			</table>
+			<nevow:invisible nevow:data="openid_fields" nevow:render="data" />
+		</form>
+	</body>
+</html>
