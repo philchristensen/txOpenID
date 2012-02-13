@@ -21,6 +21,12 @@ MYSQL_DB=txopenid
 TWISTD=/usr/local/bin/twistd
 TWISTD_PIDFILE=/var/run/txopenid/twistd.pid
 
+# load debian overrides
+if [ -d "/etc/default" ]; then
+	test -f /etc/default/rcS && . /etc/default/rcS
+	test -f /etc/default/txopenid && . /etc/default/txopenid
+fi
+
 # DEBIAN INSTRUCTIONS
 # 
 # root@debian:~# update-rc.d OPENID defaults
