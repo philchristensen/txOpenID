@@ -22,7 +22,8 @@ dist = setup(
 	install_requires = [
 		'setuptools_git>=0.4.2',
 		'twisted>=11.0.0',
-		'nevow>=0.10.0'
+		'nevow>=0.10.0',
+		'MySQL-python>=1.2.3',
 	],
 	
 	entry_points	= {
