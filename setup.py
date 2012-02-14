@@ -5,43 +5,34 @@
 #
 # See LICENSE for details
 
-import os, os.path
+from distribute_setup import use_setuptools
+use_setuptools()
 
-from distutils.core import setup
-
-assets_path = os.path.join(os.path.dirname(__file__), 'txopenid/assets')
-txopenid_path = os.path.join(os.path.dirname(__file__), 'txopenid')
-
-def load_paths(path):
-	paths = []
-	for dirpath, dirnames, filenames in os.walk(path):
-		if(dirpath.find('.svn') != -1):
-			continue
-		for f in filenames:
-			if(f.startswith('.')):
-				continue
-			if(f.endswith('.pyc')):
-				continue
-			paths.append(os.path.join(dirpath[len(txopenid_path) + 1:], f))
-	return paths
+import os
+from setuptools import setup, find_packages
 
 dist = setup(
 	name="txopenid",
 	version="0.5",
+	
+	include_package_data	= True,
+	zip_safe				= False,
+	packages				= find_packages(),
+	
+	install_requires = [
+		'setuptools_git>=0.4.2',
+		'twisted>=11.0.0',
+		'nevow>=0.10.0'
+	],
+	
+	entry_points	= {
+		'setuptools.file_finders'	: [
+			'git = setuptools_git:gitlsfiles',
+		],
+	},
+	
 	description="OpenID Server for Twisted",
 	author="Phil Christensen",
- 	author_email="phil@bubblehouse.org",
-	url="https://launchpad.net/txopenid",
-	packages = [
-		'txopenid',
-		'txopenid.assets',
-		'txopenid.test',
-		'twisted.plugins',
-	],
-	package_data = dict(
-		txopenid = [
-						'assets/*.xml',
-						'assets/webroot/*.css',
-					],
-	),
+	author_email="phil@bubblehouse.org",
+	url="https://github.com/philchristensen/txopenid",
 )
